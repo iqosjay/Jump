@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#22000000">
+
+    <com.iqos.jump.widget.JumpTouchView
+        android:id="@+id/float_window_jump_touch_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/float_window_iv_expand"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher_round"
+        android:visibility="visible"
+        tools:ignore="ContentDescription" />
+</RelativeLayout>
