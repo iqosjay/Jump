@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
                 .setMessage("运行时需要执行shell命令，必须拥有root权限！")
                 .setPositiveButton("确定") { _, _ -> checkRoot() }
                 .setNegativeButton("退出") { _, _ -> System.exit(0) }
+                .setCancelable(false)
                 .create()
     }
 
@@ -36,13 +37,15 @@ class MainActivity : AppCompatActivity() {
      * 检查是否有Root权限
      */
     private fun checkRoot() {
-        val root = CmdMgr.upgradeRootPermission(packageCodePath)
-        if (root) {
-            val wdMgr=WindowMgr()
-            wdMgr.showRootView()
-        } else {
-            if (null == mDialog) initDialog()
-            Handler().post { mDialog!!.show() }
-        }
+        CmdMgr.upgradeRootPermission(
+                packageCodePath,
+                granted = {
+                    val wdMgr = WindowMgr()
+                    wdMgr.showRootView()
+                },
+                denied = {
+                    if (null == mDialog) initDialog()
+                    Handler().post { mDialog!!.show() }
+                })
     }
 }
