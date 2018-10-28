@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.PixelFormat
 import android.util.Log
 import android.view.*
+import android.widget.Button
 import android.widget.ImageView
 import com.iqos.jump.App
 import com.iqos.jump.R
@@ -20,6 +21,8 @@ class WindowMgr {
     private var mRootView: View? = null
     private lateinit var mTouchView: JumpTouchView
     private lateinit var mIvExpand: ImageView
+    private lateinit var mBtnContinue: Button
+    private lateinit var mBtnClear: Button
     private var mRootLp: WindowManager.LayoutParams? = null
     private var mIconLp: WindowManager.LayoutParams? = null
     private var mIvSmallIcon: ImageView? = null
@@ -29,6 +32,7 @@ class WindowMgr {
     private var mCurrentYScreen = 0f
     private var mPressRowX = 0f
     private var mPressRowY = 0f
+    private var mLastCmd: String? = null
     /**
      * 显示大的布局
      */
@@ -88,9 +92,20 @@ class WindowMgr {
         mRootView = LayoutInflater.from(App.sAppCtx).inflate(R.layout.layout_float_window, null)
         mTouchView = mRootView!!.findViewById(R.id.float_window_jump_touch_view)
         mIvExpand = mRootView!!.findViewById(R.id.float_window_iv_expand)
-        mTouchView.setDistanceCallback { distance ->
-            Log.e("TAG", "距离是\t$distance")
-            CmdMgr.exec("input swipe 1 1 0 0 " + (distance * 1.44).toInt() + "\n")
+        mBtnContinue = mRootView!!.findViewById(R.id.float_window_btn_continue_last)
+        mBtnClear = mRootView!!.findViewById(R.id.float_window_btn_clear)
+        mTouchView.setDistanceCallback { cmd ->
+            mLastCmd = cmd
+            CmdMgr.exec(cmd + "\n")
+        }
+        mBtnContinue.setOnClickListener {
+            if (true == mLastCmd?.isNotEmpty()) {
+                CmdMgr.exec(mLastCmd + "\n")
+            }
+        }
+        mBtnClear.setOnClickListener {
+            mTouchView.clearPoint()
+            mTouchView.invalidate()
         }
         mIvExpand.setOnClickListener {
             this.hidePopupWindow()

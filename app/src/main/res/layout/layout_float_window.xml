@@ -14,11 +14,34 @@
         android:id="@+id/float_window_iv_expand"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_launcher_round"
         android:visibility="visible"
         tools:ignore="ContentDescription" />
+
+    <Button
+        android:id="@+id/float_window_btn_continue_last"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:layout_toStartOf="@id/float_window_iv_expand"
+        android:text="继续上次"
+        android:visibility="visible"
+        tools:ignore="ContentDescription" />
+
+    <Button
+        android:id="@+id/float_window_btn_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:layout_toStartOf="@id/float_window_btn_continue_last"
+        android:text="清除"
+        android:visibility="visible"
+        tools:ignore="ContentDescription" />
+
 </RelativeLayout>
