@@ -1,10 +1,12 @@
 package com.iqos.jump
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.widget.Button
+import android.widget.EditText
 import com.iqos.jump.util.CmdMgr
 import com.iqos.jump.util.WindowMgr
 
@@ -12,12 +14,23 @@ import com.iqos.jump.util.WindowMgr
 class MainActivity : AppCompatActivity() {
     private var mDialog: AlertDialog? = null
     private lateinit var mBtnOk: Button
+    private lateinit var mBtnConfirm: Button
+    private lateinit var mEtRatio: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val sp = getSharedPreferences("config.xml", Context.MODE_PRIVATE)
         mBtnOk = findViewById(R.id.app_btn_start)
+        mBtnConfirm = findViewById(R.id.app_btn_confirm_ratio)
+        mEtRatio = findViewById(R.id.app_et_ratio)
+        mEtRatio.setText(sp.getFloat("ratio", 1.390f).toString())
         mBtnOk.setOnClickListener { this.checkRoot() }
+        mBtnConfirm.setOnClickListener {
+            if (mEtRatio.text.toString().isNotEmpty()) {
+                sp.edit().putFloat("ratio", mEtRatio.text.toString().toFloat()).apply()
+            }
+        }
     }
 
     /**

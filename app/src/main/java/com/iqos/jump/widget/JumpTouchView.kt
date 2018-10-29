@@ -12,10 +12,7 @@ import android.view.View
  * Created by "iqos_jay@outlook.com" on 2018/10/25
  * 触摸View
  */
-class JumpTouchView @JvmOverloads constructor(private val ctx: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(ctx, attrs, defStyleAttr) {
-    private var mTouchX = -1f
-    private var mTouchY = -1f
-    private var mPressDownMillions = -1L
+class JumpTouchView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(ctx, attrs, defStyleAttr) {
     /**
      * 点1
      */
@@ -24,17 +21,35 @@ class JumpTouchView @JvmOverloads constructor(private val ctx: Context, attrs: A
      * 点2
      */
     private var mPoint2: Point? = null
+    /**
+     * 画笔
+     */
     private val mPaint = Paint()
-    private var mCanvas: Canvas? = null
+    /**
+     * 是否是第一个坐标
+     */
+    private var mFirst = false
+    /**
+     * 是否处于按下
+     */
+    private var mPressed = false
+    /**
+     * 弹跳系数
+     */
+    private var mRatio = 1.390f
     /**
      * 选取坐标完成之后的回调
-     * 传入的参数distance是这两个坐标的距离
+     * 通过距离计算时间、最终要执行的命令
      */
-    private var mDistanceCallback: ((distance: Int) -> Unit)? = null
+    private var mDistanceCallback: ((cmd: String) -> Unit)? = null
 
     init {
+        val sp = ctx.getSharedPreferences("config", Context.MODE_PRIVATE)
+        mRatio = sp.getFloat("ratio", 1.390f)
         setOnTouchListener(MyTouchListener())
         mPaint.color = Color.RED
+        mPaint.textSize = 50f
+        mPaint.strokeWidth = 3f
     }
 
     private inner class MyTouchListener : View.OnTouchListener {
@@ -50,31 +65,39 @@ class JumpTouchView @JvmOverloads constructor(private val ctx: Context, attrs: A
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    mTouchX = event.x
-                    mTouchY = event.y
-                    mPressDownMillions = System.currentTimeMillis()
+                    if (null == mPoint1) {
+                        mPoint1 = Point(event.x, event.y)
+                        mFirst = true
+                    } else {
+                        mPoint2 = Point(event.x, event.y)
+                        mFirst = false
+                    }
+                    mPressed = true
+                    invalidate()
                     return true
                 }
-                MotionEvent.ACTION_MOVE -> return false
-                MotionEvent.ACTION_UP -> {
-                    val leaveX = event.x
-                    val leaveY = event.y
-                    val now = System.currentTimeMillis()
-                    if (Math.abs(mTouchX - leaveX) < MAX_DIS_PX && Math.abs(mTouchY - leaveY) < MAX_DIS_PX && Math.abs(mPressDownMillions - now) < MAX_MILLIONS) {
-                        //可以视为点击
-                        v?.performClick()
-                        if (null == mPoint1) {
-                            mPoint1 = Point(mTouchX, mTouchY)
-                        } else {
-                            mPoint2 = Point(mTouchX, mTouchY)
-                            val distance = calcDis(mPoint1!!, mPoint2!!)
-                            mDistanceCallback?.invoke(distance)
-                            mPoint1 = null
-                            mPoint2 = null
-                        }
+                MotionEvent.ACTION_MOVE -> {
+                    if (mFirst) {
+                        mPoint1!!.x = event.x
+                        mPoint1!!.y = event.y
                     } else {
-                        mPoint1 = null
+                        mPoint2!!.x = event.x
+                        mPoint2!!.y = event.y
                     }
+                    invalidate()
+                    return false
+                }
+                MotionEvent.ACTION_UP -> {
+                    if (mFirst) {
+                        mPoint1!!.x = event.x
+                        mPoint1!!.y = event.y
+                    } else {
+                        mPoint2!!.x = event.x
+                        mPoint2!!.y = event.y
+                    }
+                    v?.performClick()
+                    invalidate()
+                    mPressed = false
                     return false
                 }
                 else -> return false
@@ -83,8 +106,41 @@ class JumpTouchView @JvmOverloads constructor(private val ctx: Context, attrs: A
     }
 
     override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
-        this.mCanvas = canvas
+        if (mPressed) {
+            if (null != mPoint1) this.drawLine(mPoint1!!, canvas)
+            if (null != mPoint2) this.drawLine(mPoint2!!, canvas)
+        } else {
+            if (null != mPoint1) this.drawPoint(mPoint1!!, canvas)
+            if (null != mPoint2) this.drawPoint(mPoint2!!, canvas)
+            if (null != mPoint1 && null != mPoint2) {
+                mPaint.color = Color.MAGENTA
+                canvas?.drawLine(mPoint1!!.x, mPoint1!!.y, mPoint2!!.x, mPoint2!!.y, mPaint)
+                mPaint.color = Color.BLUE
+                canvas?.drawText("距离:" + calcDis(mPoint1!!, mPoint2!!).toString(), 0f, TXT_SIZE, mPaint)
+                val cmd = "input swipe 1 1 0 0 " + (calcDis(mPoint1!!, mPoint2!!) * mRatio).toInt()
+                canvas?.drawText("执行:$cmd", 0f, TXT_SIZE * 2 + 10f, mPaint)
+                mDistanceCallback?.invoke(cmd)
+                this.clearPoint()
+            }
+        }
+    }
+
+    fun clearPoint() {
+        mPoint1 = null
+        mPoint2 = null
+    }
+
+    private fun drawLine(point: Point, canvas: Canvas?) {
+        mPaint.color = Color.GREEN
+        canvas?.drawLine(0f, point.y, width.toFloat(), point.y, mPaint)
+        canvas?.drawLine(point.x, 0f, point.x, height.toFloat(), mPaint)
+    }
+
+    private fun drawPoint(point: Point, canvas: Canvas?) {
+        mPaint.color = Color.RED
+        val x = point.x
+        val y = point.y
+        canvas?.drawCircle(x, y, 5f, mPaint)
     }
 
     /**
@@ -107,12 +163,11 @@ class JumpTouchView @JvmOverloads constructor(private val ctx: Context, attrs: A
     /**
      * 绑定回调接口
      */
-    fun setDistanceCallback(distanceCallback: ((distance: Int) -> Unit)?) {
+    fun setDistanceCallback(distanceCallback: ((cmd: String) -> Unit)?) {
         this.mDistanceCallback = distanceCallback
     }
 
     companion object {
-        private const val MAX_DIS_PX = 10
-        private const val MAX_MILLIONS = 500
+        private const val TXT_SIZE = 50f
     }
 }
