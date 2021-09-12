@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="Theme.Jump" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@android:color/white</item>
+        <item name="colorPrimaryDark">@android:color/darker_gray</item>
+        <item name="colorAccent">@color/teal_200</item>
+    </style>
+</resources>

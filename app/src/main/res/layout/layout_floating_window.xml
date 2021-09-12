@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#22000000">
+
+    <com.roy.jump.widget.TouchView
+        android:id="@+id/touch_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/iv_expand"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="fitXY"
+        android:layout_marginBottom="16dp"
+        android:src="@mipmap/ic_launcher_round"
+        android:visibility="visible"
+        tools:ignore="ContentDescription" />
+
+    <Button
+        android:id="@+id/button_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/iv_expand"
+        android:layout_alignBottom="@id/iv_expand"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toStartOf="@id/iv_expand"
+        android:background="@drawable/shape_button"
+        android:text="继续"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:visibility="visible"
+        tools:ignore="ContentDescription,HardcodedText" />
+
+    <Button
+        android:id="@+id/button_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:layout_alignTop="@id/iv_expand"
+        android:layout_alignBottom="@id/iv_expand"
+        android:layout_toStartOf="@id/button_continue"
+        android:background="@drawable/shape_button"
+        android:text="清除"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:visibility="visible"
+        tools:ignore="ContentDescription,HardcodedText" />
+</RelativeLayout>
