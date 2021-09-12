@@ -7,7 +7,7 @@
 
 ---
 
-[Apk下载](https://github.com/iqosjay/Jump/raw/master/app/release/app-release.apk)
+[Apk下载体验](https://github.com/iqosjay/Jump/releases/download/1.0.0/jump.apk)
 
 ---
 
