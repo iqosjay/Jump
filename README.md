@@ -7,6 +7,10 @@
 
 ---
 
+[Apk下载](https://github.com/iqosjay/Jump/raw/master/app/release/app-release.apk)
+
+---
+
 ### 如何使用？
 
 #### 1.确保你的Android 设备API高于 24 (也就是你的Android 系统版本号要高于 Android 7.0);
