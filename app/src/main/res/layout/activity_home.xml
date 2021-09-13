@@ -6,44 +6,106 @@
     tools:context=".HomeActivity">
 
     <LinearLayout
-        android:id="@+id/top"
+        android:id="@+id/ll_jump_ratio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="弹跳系数:"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
         <EditText
             android:id="@+id/et_ratio"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_weight="1"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="3"
+            android:background="@drawable/shape_input_box"
             android:gravity="start"
             android:hint="输入弹跳系数"
             android:inputType="numberDecimal"
             android:maxLength="6"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
             tools:ignore="Autofill,HardcodedText" />
 
-        <Button
-            android:id="@+id/button_save"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/shape_button"
-            android:text="保存"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            tools:ignore="HardcodedText" />
+
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_offset_y"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_below="@id/ll_jump_ratio"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="偏移量Y:"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
+        <EditText
+            android:id="@+id/et_offset_y"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="3"
+            android:background="@drawable/shape_input_box"
+            android:gravity="start"
+            android:hint="输入Y轴偏移量"
+            android:inputType="number"
+            android:maxLength="6"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            tools:ignore="Autofill,HardcodedText" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_offset_y"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/shape_button"
+        android:text="保存"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/button_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/shape_button"
         android:padding="8dp"
         android:text="开始"
@@ -55,7 +117,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/button_start"
-        android:layout_below="@id/top"
+        android:layout_below="@id/button_save"
         android:layout_marginTop="16dp">
 
         <LinearLayout

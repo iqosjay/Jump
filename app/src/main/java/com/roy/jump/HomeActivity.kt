@@ -10,6 +10,8 @@ import com.roy.jump.util.AndroidUtil
 import com.roy.jump.util.SpUtils.Companion.spUtils
 import com.roy.jump.util.ToastUtil
 import com.roy.jump.util.WndManager
+import com.roy.jump.widget.TouchView.Companion.DEFAULT_OFFSET_Y
+import com.roy.jump.widget.TouchView.Companion.DEFAULT_RATIO
 
 
 class HomeActivity : AppCompatActivity() {
@@ -20,12 +22,15 @@ class HomeActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(binding.root)
-    binding.etRatio.setText(spUtils.getFloat("ratio").toString())
-    binding.buttonStart.setOnClickListener { startHelper() }
+    binding.etRatio.setText(spUtils.getFloat("ratio", DEFAULT_RATIO).toString())
+    binding.etOffsetY.setText(spUtils.getInt("offsetY", DEFAULT_OFFSET_Y).toString())
+    binding.buttonStart.setOnClickListener { /*startHelper()*/checkFloatingWindowPermission() }
     binding.buttonSave.setOnClickListener {
       try {
-        val ratio = binding.etRatio.text?.toString()?.toFloat() ?: 1f
+        val ratio = binding.etRatio.text?.toString()?.toFloat() ?: DEFAULT_RATIO
+        val offsetY = binding.etOffsetY.text?.toString()?.toInt() ?: DEFAULT_OFFSET_Y
         spUtils.put("ratio", ratio)
+        spUtils.put("offsetY", offsetY)
         ToastUtil.showToast("保存成功.")
       } catch (ignored: Exception) {
         ToastUtil.showToast("保存失败.")
@@ -34,7 +39,7 @@ class HomeActivity : AppCompatActivity() {
   }
 
   private fun startHelper() {
-    if (AndroidUtil.isAccessibilityServiceEnabled(this)) {
+    if (AndroidUtil.isAccessibilityServiceEnabled()) {
       checkFloatingWindowPermission()
     } else {
       ToastUtil.showToast("请在“已安装服务”列表中激活\"${getString(R.string.app_name)}\".")

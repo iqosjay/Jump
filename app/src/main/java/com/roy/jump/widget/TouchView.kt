@@ -62,13 +62,14 @@ class TouchView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = n
      */
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
       event?.let {
+        val offsetY = spUtils.getInt("offsetY", DEFAULT_OFFSET_Y)
         when (it.action) {
           MotionEvent.ACTION_DOWN -> {
             if (null == point1) {
-              point1 = Point(it.x, it.y)
+              point1 = Point(it.x, it.y - offsetY)
               isFirst = true
             } else {
-              point2 = Point(it.x, it.y)
+              point2 = Point(it.x, it.y - offsetY)
               isFirst = false
             }
             isPress = true
@@ -78,10 +79,10 @@ class TouchView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = n
           MotionEvent.ACTION_MOVE -> {
             if (isFirst) {
               point1?.x = it.x
-              point1?.y = it.y
+              point1?.y = it.y - offsetY
             } else {
               point2?.x = it.x
-              point2?.y = it.y
+              point2?.y = it.y - offsetY
             }
             invalidate()
             return false
@@ -89,10 +90,10 @@ class TouchView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = n
           MotionEvent.ACTION_UP -> {
             if (isFirst) {
               point1?.x = it.x
-              point1?.y = it.y
+              point1?.y = it.y - offsetY
             } else {
               point2?.x = it.x
-              point2?.y = it.y
+              point2?.y = it.y - offsetY
             }
             v?.performClick()
             invalidate()
@@ -107,7 +108,7 @@ class TouchView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = n
   }
 
   override fun onDraw(canvas: Canvas?) {
-    val ratio = spUtils.getFloat("ratio")
+    val ratio = spUtils.getFloat("ratio", DEFAULT_RATIO)
     point1?.let {
       drawLine(it, canvas)
       drawPoint(it, canvas)
@@ -125,13 +126,21 @@ class TouchView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = n
       val margin = AndroidUtil.dp(16f)
       val distance = MathUtil.calculateDistance(p1, p2)
       val pressMs = (distance * ratio).toInt()
+      paint.color = Color.RED
+
       var y = TEXT_SZ
       canvas?.drawText("弹跳系数:${ratio}", margin, y, paint)
+
+      y += TEXT_SZ + 10
+      canvas?.drawText("起始坐标:(${p1.x.toInt()},${p1.y.toInt()})", margin, y, paint)
+
+      y += TEXT_SZ + 10
+      canvas?.drawText("起始坐标:(${p2.x.toInt()},${p2.y.toInt()})", margin, y, paint)
+
       y += TEXT_SZ + 10
       canvas?.drawText("像素距离:${distance}", margin, y, paint)
-      y += TEXT_SZ + 10
 
-      paint.color = Color.RED
+      y += TEXT_SZ + 10
       canvas?.drawText("长按时间:${distance} * $ratio = $pressMs", margin, y, paint)
 
       pressTimeCallback?.invoke(pressMs.toLong())
@@ -145,7 +154,7 @@ class TouchView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = n
   }
 
   private fun drawLine(point: Point, canvas: Canvas?) {
-    paint.color = Color.GREEN
+    paint.color = Color.WHITE
     canvas?.drawLine(0f, point.y, width.toFloat(), point.y, paint)
     canvas?.drawLine(point.x, 0f, point.x, height.toFloat(), paint)
   }
@@ -155,10 +164,13 @@ class TouchView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = n
     val x = point.x
     val y = point.y
     canvas?.drawCircle(x, y, 4f, paint)
+    canvas?.drawText("(${point.x.toInt()},${point.y.toInt()})", x + 4f, y, paint)
   }
 
   companion object {
     private const val TEXT_SZ = 48f
     private const val BOLD_SZ = 2f
+    const val DEFAULT_RATIO = 1f
+    const val DEFAULT_OFFSET_Y = 256
   }
 }

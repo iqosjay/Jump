@@ -13,9 +13,19 @@ class SpUtils private constructor() {
     sp.edit().putFloat(key, value).apply()
   }
 
-  fun getFloat(key: String): Float {
+  fun put(key: String, value: Int) {
     val sp = App.appCtx.getSharedPreferences(FILENAME, Context.MODE_PRIVATE)
-    return sp.getFloat(key, 1.0f)
+    sp.edit().putInt(key, value).apply()
+  }
+
+  fun getFloat(key: String, def: Float = 0f): Float {
+    val sp = App.appCtx.getSharedPreferences(FILENAME, Context.MODE_PRIVATE)
+    return sp.getFloat(key, def)
+  }
+
+  fun getInt(key: String, def: Int = 0): Int {
+    val sp = App.appCtx.getSharedPreferences(FILENAME, Context.MODE_PRIVATE)
+    return sp.getInt(key, def)
   }
 
   companion object {

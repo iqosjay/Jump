@@ -2,10 +2,10 @@ package com.roy.jump.util
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
 import android.view.*
+import android.widget.ImageButton
 import android.widget.ImageView
 import com.roy.jump.App
 import com.roy.jump.R
@@ -16,15 +16,54 @@ import kotlin.math.abs
 /**
  * Created by Roy on 2021/9/11
  */
+@SuppressLint("InflateParams")
 class WndManager {
-  private val rootLayoutParams by lazy { WindowManager.LayoutParams() }
-  private val iconLayoutParams by lazy { WindowManager.LayoutParams() }
+
   private val windowManager by lazy { App.appCtx.getSystemService(Context.WINDOW_SERVICE) as WindowManager }
+  private val rootHeight by lazy { ViewUtil.screenHeight * 3 / 4 - ViewUtil.statusBarHt }
+  private val rootLayoutParams by lazy {
+    WindowManager.LayoutParams().also {
+      val flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+      it.type = WINDOW_TYPE
+      it.flags = flags
+      it.format = PixelFormat.TRANSLUCENT
+      it.width = ViewUtil.screenWidth
+      it.height = rootHeight
+      it.gravity = Gravity.CENTER
+    }
+  }
+
+  private val iconLayoutParams by lazy {
+    WindowManager.LayoutParams().also {
+      val flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+      val ballSz = AndroidUtil.dp(56f).toInt()
+      it.type = WINDOW_TYPE
+      it.flags = flags
+      it.format = PixelFormat.TRANSLUCENT
+      it.width = ballSz
+      it.height = ballSz
+      it.gravity = Gravity.START or Gravity.TOP
+      it.x = ViewUtil.screenWidth - ballSz
+      it.y = rootHeight
+    }
+  }
+
+  private val dragBall by lazy {
+    ImageButton(App.appCtx).also {
+      val dp4 = AndroidUtil.dp(4f).toInt()
+      it.setImageResource(R.drawable.ic_baseline_add_24)
+      it.setOnTouchListener(DrugListener())
+      it.setPadding(dp4, dp4, dp4, dp4)
+      it.elevation = dp4.toFloat()
+      it.scaleType = ImageView.ScaleType.CENTER_CROP
+      it.background = AndroidUtil.createShape(AndroidUtil.dp(28f), AndroidUtil.getColor(R.color.accent2), 0, 0)
+    }
+  }
+
+  private val rootView by lazy { LayoutInflater.from(App.appCtx).inflate(R.layout.layout_floating_window, null) }
+  private val binding by lazy { LayoutFloatingWindowBinding.bind(rootView) }
 
   private var initialized = false
-  private var binding: LayoutFloatingWindowBinding? = null
-  private var rootView: View? = null
-  private var ivSmallIcon: ImageView? = null
   private var xView = 0f
   private var yView = 0f
   private var currentXScreen = 0f
@@ -35,24 +74,14 @@ class WndManager {
 
 
   fun showWindow() {
-    this.initData()
+    this.bindEvents()
     if (!isShown) {
       isShown = true
       try {
-        windowManager.removeView(ivSmallIcon)
+        windowManager.removeView(dragBall)
       } catch (ignored: Throwable) {
       }
       windowManager.addView(rootView, rootLayoutParams)
-    }
-  }
-
-  private fun initData() {
-    if (!initialized) {
-      initIconLp()
-      initRootLp()
-      initRootView()
-      initSmallIcon()
-      initialized = true
     }
   }
 
@@ -63,73 +92,27 @@ class WndManager {
     }
   }
 
-  /**
-   * 可拖动的图标初始化
-   */
-  @SuppressLint("ClickableViewAccessibility")
-  private fun initSmallIcon() {
-    ivSmallIcon = ImageView(App.appCtx).also {
-      it.scaleType = ImageView.ScaleType.FIT_XY
-      it.setImageResource(R.mipmap.ic_launcher_round)
-      it.setOnTouchListener(DrugListener())
-    }
-  }
-
-  /**
-   * 可拖动的图标的LayoutParams初始化
-   */
-  private fun initIconLp() {
-    val flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-    iconLayoutParams.let {
-      it.type = WINDOW_TYPE
-      it.flags = flags
-      it.format = PixelFormat.TRANSLUCENT
-      it.width = AndroidUtil.dp(50f).toInt()
-      it.height = AndroidUtil.dp(50f).toInt()
-      it.gravity = Gravity.START or Gravity.TOP
-      it.x = currentXScreen.toInt()
-      it.y = currentYScreen.toInt()
-    }
-  }
 
   /**
    * 根布局(大的弹窗)初始化
    */
-  @SuppressLint("InflateParams")
-  private fun initRootView() {
-    rootView = LayoutInflater.from(App.appCtx).inflate(R.layout.layout_floating_window, null)?.also {
-      binding = LayoutFloatingWindowBinding.bind(it)
+  private fun bindEvents() {
+    if (initialized) {
+      return
     }
-    binding?.let { bd ->
-      bd.touchView.pressTimeCallback = {
-        lastTime = it
-        messageCenter.postEvent(ACTION_PRESS, it)
-      }
-      bd.buttonContinue.setOnClickListener { lastTime?.let { messageCenter.postEvent(ACTION_PRESS, it) } }
-      bd.buttonClear.setOnClickListener {
-        bd.touchView.clearPoint()
-        bd.touchView.invalidate()
-      }
-      bd.ivExpand.setOnClickListener {
-        this.hideWindow()
-        this.showIcon()
-      }
+    initialized = true
+    binding.touchView.pressTimeCallback = {
+      lastTime = it
+      messageCenter.postEvent(ACTION_PRESS, it)
     }
-
-  }
-
-  /**
-   * 根布局LayoutParams初始化
-   */
-  private fun initRootLp() {
-    rootLayoutParams.let {
-      val flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-      it.type = WINDOW_TYPE
-      it.flags = flags
-      it.format = PixelFormat.TRANSLUCENT
-      it.width = ViewUtil.screenWidth
-      it.height = ViewUtil.screenHeight * 3 / 4 - ViewUtil.statusBarHt
-      it.gravity = Gravity.CENTER
+    binding.buttonContinue.setOnClickListener { lastTime?.let { messageCenter.postEvent(ACTION_PRESS, it) } }
+    binding.buttonClear.setOnClickListener {
+      binding.touchView.clearPoint()
+      binding.touchView.invalidate()
+    }
+    binding.buttonMinimize.setOnClickListener {
+      this.hideWindow()
+      this.showIcon()
     }
   }
 
@@ -139,7 +122,7 @@ class WndManager {
   private fun showIcon() {
     windowManager.let {
       it.removeView(rootView)
-      it.addView(ivSmallIcon, iconLayoutParams)
+      it.addView(dragBall, iconLayoutParams)
     }
   }
 
@@ -150,7 +133,7 @@ class WndManager {
     iconLayoutParams.let {
       it.x = (currentXScreen - xView).toInt()
       it.y = (currentYScreen - yView).toInt()
-      windowManager.updateViewLayout(ivSmallIcon, it)
+      windowManager.updateViewLayout(dragBall, it)
     }
   }
 

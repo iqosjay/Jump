@@ -2,11 +2,14 @@ package com.roy.jump.util
 
 import android.content.ComponentName
 import android.content.Context
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.text.TextUtils
 import com.roy.jump.App
+import com.roy.jump.R
 import com.roy.jump.service.PerformService
 
 /**
@@ -15,10 +18,10 @@ import com.roy.jump.service.PerformService
 object AndroidUtil {
   private val handler = Handler(Looper.getMainLooper())
   fun runOnUIThread(runnable: Runnable) {
-    runOnUIThread(runnable, 0)
+    runOnUIThread(0, runnable)
   }
 
-  fun runOnUIThread(runnable: Runnable, delay: Long) {
+  fun runOnUIThread(delay: Long, runnable: Runnable) {
     if (0 >= delay) {
       if (Looper.myLooper() == Looper.getMainLooper()) {
         runnable.run()
@@ -41,7 +44,20 @@ object AndroidUtil {
     return (dp * scale + 0.5f)
   }
 
-  fun isAccessibilityServiceEnabled(context: Context): Boolean {
+  fun createShape(radius: Float, solidColor: Int, strokeColor: Int, strokeWidth: Int): Drawable {
+    val shape = GradientDrawable()
+    shape.cornerRadius = radius
+    shape.setStroke(strokeWidth, strokeColor)
+    shape.setColor(solidColor)
+    return shape
+  }
+
+  fun getColor(colorId: Int): Int {
+    return App.appCtx.resources.getColor(colorId, null)
+  }
+
+  fun isAccessibilityServiceEnabled(): Boolean {
+    val context = App.appCtx
     val expectedComponentName = ComponentName(context, PerformService::class.java)
     val enabledServicesSetting = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: return false
     val colonSplitter = TextUtils.SimpleStringSplitter(':')

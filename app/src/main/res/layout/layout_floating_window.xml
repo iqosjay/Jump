@@ -3,55 +3,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#22000000">
+    android:background="#33000000">
 
     <com.roy.jump.widget.TouchView
         android:id="@+id/touch_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ImageView
-        android:id="@+id/iv_expand"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+    <Button
+        android:id="@+id/button_minimize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
-        android:scaleType="fitXY"
         android:layout_marginBottom="16dp"
-        android:src="@mipmap/ic_launcher_round"
-        android:visibility="visible"
-        tools:ignore="ContentDescription" />
+        android:background="@drawable/shape_button2"
+        android:elevation="4dp"
+        android:scaleType="fitCenter"
+        android:text="收起"
+        android:textColor="@color/white"
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/button_continue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/iv_expand"
-        android:layout_alignBottom="@id/iv_expand"
-        android:layout_marginEnd="8dp"
+        android:layout_alignTop="@id/button_minimize"
+        android:layout_alignBottom="@id/button_minimize"
         android:layout_marginStart="8dp"
-        android:layout_toStartOf="@id/iv_expand"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/button_minimize"
         android:background="@drawable/shape_button"
         android:text="继续"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
-        android:visibility="visible"
-        tools:ignore="ContentDescription,HardcodedText" />
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/button_clear"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:layout_alignTop="@id/button_minimize"
+        android:layout_alignBottom="@id/button_minimize"
         android:layout_marginEnd="8dp"
-        android:layout_alignTop="@id/iv_expand"
-        android:layout_alignBottom="@id/iv_expand"
         android:layout_toStartOf="@id/button_continue"
         android:background="@drawable/shape_button"
         android:text="清除"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
-        android:visibility="visible"
-        tools:ignore="ContentDescription,HardcodedText" />
+        tools:ignore="HardcodedText" />
 </RelativeLayout>
