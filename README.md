@@ -6,7 +6,7 @@
 
 ---
 
-[Apk下载体验](https://github.com/iqosjay/Jump/releases/download/1.1.1/jump_1.1.1.apk)
+[Apk下载体验](https://github.com/iqosjay/Jump/tree/master/app/release/app-release.apk)
 
 ---
 
