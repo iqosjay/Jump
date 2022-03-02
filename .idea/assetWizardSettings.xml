@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Public/sdk/android/icons/material/materialicons/minimize/baseline_minimize_24.xml" />
+                                      <entry key="url" value="jar:file:/D:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/add/baseline_add_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,8 +28,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_baseline_minimize_24" />
+                            <entry key="outputName" value="ic_add" />
+                            <entry key="sourceFile" value="D:\Workspace\Android\Demo\Jump" />
                           </map>
                         </option>
                       </PersistentState>

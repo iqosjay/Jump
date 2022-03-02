@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">Jump</string>
-    <string name="accessibility_desc">激活该“无障碍服务”就可以模拟全局长按手势.</string>
+    <string name="app_name">jump</string>
+    <string name="open">点我</string>
+    <string name="accessibility_desc">API > 24 的设备打开该服务即可模拟全局手势</string>
     <string name="using_description">如何使用？\n
-        1.确保你的Android 设备API高于 24 (也就是你的Android 系统版本号要高于 Android 7.0);\n
+        1.确保你的Android 设备 API 高于 24 (也就是你的 Android 系统版本号要高于 Android 7.0);\n
         \n
         2.授予“悬浮窗”权限;\n
         \n
